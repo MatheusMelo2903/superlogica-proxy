@@ -16,6 +16,9 @@ app.use(express.raw({ type: '*/*', limit: '10mb' }));
 
 app.all('/v2/condor/*', (req, res) => {
   const path = req.url;
+  const appToken = req.headers['app_token'] || '';
+  const accessToken = req.headers['access_token'] || '';
+
   const options = {
     hostname: 'api.superlogica.net',
     port: 443,
@@ -23,8 +26,10 @@ app.all('/v2/condor/*', (req, res) => {
     method: req.method,
     headers: {
       'Content-Type': req.headers['content-type'] || 'application/x-www-form-urlencoded',
-      'app_token': req.headers['app_token'] || '',
-      'access_token': req.headers['access_token'] || '',
+      'app_token': appToken,
+      'access_token': accessToken,
+      'client_id': appToken,
+      'Authorization': 'Bearer ' + accessToken,
     }
   };
 
